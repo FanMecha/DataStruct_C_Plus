@@ -15,7 +15,7 @@
 
 class array{
 public:
-    array(int size = 10) : mCur_(0), mCap_(10){
+    array(int size) : mCur_(0), mCap_(size){
         mPtr_ = new int[mCap_]();
     }
     ~array(){
@@ -26,7 +26,7 @@ private:
     //内部数组扩容接口
     void expand(int size){
         int *p = new int[size];
-        memcpy(p, mPtr_, sizeof(int)*mCur_);
+        memcpy(p, mPtr_, sizeof(int)*mCur_);//按照字符拷贝
         delete []mPtr_;
         mPtr_ = p;
         mCap_ = size;
@@ -37,14 +37,16 @@ public:
         if(mCur_ == mCap_){
             expand(2*mCap_);
         }
-        mPtr_[mCur_++] = val;
+        mPtr_[mCur_] = val;
+        mCur_++;
     }
     //末尾位置删除元素
     void pop_back(){
         if(mCur_ == 0){
             return;
         }
-        mCur_--;
+        //这里并没有真的删除最后一个元素,而是直接将元素的个数减1,这样打印时就认为数组里没有最后一个数据了
+        mCur_--; 
     }
     //按位置增加元素
     void insert(int pos, int val){
@@ -54,18 +56,19 @@ public:
         if (mCur_ == mCap_){
             expand(2*mCur_);
         }
-        for(int i = mCur_ - 1; i >= pos; i--){
-            mPtr_[i+1] = mPtr_[i];
+        for(int i = mCur_; i > pos; i--){
+            mPtr_[i] = mPtr_[i-1];
         }
         mPtr_[pos] = val;
+        mCur_++;
     }
     //按位置删除元素
     void erase(int pos){
         if(pos < 0 || pos > mCur_){
             return;
         }
-        for(int i = pos + 1; i < mCur_; i++){
-            mPtr_[i-1] = mPtr_[i+1];
+        for(int i = pos; i < mCur_; i++){
+            mPtr_[i] = mPtr_[i+1];
         }
         mCur_--;
     }
@@ -97,16 +100,13 @@ int main(){
     }
     array1.showArray();
 
-    array1.push_back(10);
-    array1.showArray();
-
     array1.pop_back();
     array1.showArray();
 
-    array1.insert(7,100);
+    array1.insert(3,10000);
     array1.showArray();
 
-    int pos = array1.find(100);
+    int pos = array1.find(2);
     array1.erase(pos);
     array1.showArray();
     return 0;
