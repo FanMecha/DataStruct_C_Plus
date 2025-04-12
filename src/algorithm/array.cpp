@@ -2,6 +2,7 @@
 // Created by MechaFan on 2025/4/9.
 //
 
+//======数组特征：内存连续，下标访问快
 //======数组的优点(内存连续)
 //1.数组的下标访问(随机访问)的时间复杂度为O(1)
 //2.末尾位置增加或删除元素的时间复杂度为O(1)
@@ -15,7 +16,7 @@
 
 class array{
 public:
-    array(int size) : mCur_(0), mCap_(size){
+    array(int size = 10) : mCur_(0), mCap_(size){
         mPtr_ = new int[mCap_]();
     }
     ~array(){
@@ -34,6 +35,7 @@ private:
 public:
     //末尾位置增加元素
     void push_back(int val){
+        //如果数组容量已满，先扩容
         if(mCur_ == mCap_){
             expand(2*mCap_);
         }
@@ -67,7 +69,7 @@ public:
         if(pos < 0 || pos > mCur_){
             return;
         }
-        for(int i = pos; i < mCur_; i++){
+        for(int i = pos; mCur_ >= i; i++){
             mPtr_[i] = mPtr_[i+1];
         }
         mCur_--;
@@ -88,24 +90,28 @@ public:
         std::cout << std::endl;
     }
 private:
-    int *mPtr_;//指针
-    int mCap_;//数组元素的容量
-    int mCur_;//数组当前元素的个数
+    int *mPtr_;//指针指向堆内存上开辟的地址
+    int mCap_;//当前数组的容量
+    int mCur_;//当前数组的元素个数
 };
 
 int main(){
+    // 末尾增加元素测试
     array array1(10);
     for(int i = 0; i < 10; i++){
         array1.push_back(i);
     }
     array1.showArray();
 
+    //末尾删除元素测试
     array1.pop_back();
     array1.showArray();
 
+    //指定位置增加元素测试
     array1.insert(3,10000);
     array1.showArray();
 
+    //指定位置删除元素测试
     int pos = array1.find(2);
     array1.erase(pos);
     array1.showArray();
