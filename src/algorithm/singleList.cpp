@@ -100,6 +100,43 @@ public:
         }
         return false;
     }
+
+    //单链表逆序
+    void reverse(){
+        Node *p = head_->next_;
+        if(p == nullptr){
+            return;
+        }
+        head_->next_ = nullptr;
+        while(p->next_ != nullptr){
+            Node *q = p->next_;
+            //这里其实是头插法
+            p->next_ = head_->next_;
+            head_->next_ = p;
+            p = q;
+        }
+    }
+
+    //求链表倒数第k个节点的值
+    int getKValue(int size){
+        if (size < 1){
+            return -1;
+        }
+        Node *p = head_;
+        Node *q = head_;
+        for (int i = 0; i < size; i++){
+            p = p->next_;
+            if(p->next_ == nullptr){
+                return -1;
+            }
+        }
+        while(p != nullptr){
+            q = q->next_;
+            p = p->next_;
+        }
+        return q->data_;
+    }
+
     void showNode(){
         Node *p = head_->next_;
         while (p != nullptr)
@@ -122,7 +159,7 @@ int main(){
     }
     std::cout << std::endl;
     clink.showNode();
-
+    
     //删除元素测试
     clink.insertTail(28);
     clink.insertHead(14);
@@ -135,5 +172,13 @@ int main(){
 
     //查找元素测试
     std::cout <<clink.find(28) << std::endl;
+
+    //单链表逆序测试
+    clink.reverse();
+    clink.showNode();
+
+    //链表倒数第k个节点的值测试
+    std::cout << clink.getKValue(1) <<std::endl;
+    
     return 0;
 }
