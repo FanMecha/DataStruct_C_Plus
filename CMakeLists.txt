@@ -3,3 +3,4 @@ project(LeetCode)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(array src/algorithm/array.cpp)
+add_executable(singleList src/algorithm/singleList.cpp)

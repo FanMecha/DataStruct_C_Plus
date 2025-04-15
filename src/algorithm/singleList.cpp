@@ -32,6 +32,7 @@ public:
         Node *p = head_;
         while(p != nullptr){
             head_ = head_->next_;
+            //循环时,删除p之后,p就成野指针了,所以要再赋值到下一个
             delete p;
             p = head_;
         }
@@ -39,6 +40,8 @@ public:
 private:
     Node *head_;
 public:
+
+    //链表尾部插入节点
     void insertTail(int val){
         //先找到当前链表的末尾节点
         Node *p = head_;
@@ -50,6 +53,8 @@ public:
         //把新节点挂在尾节点的后面
         p->next_ = node;
     }
+
+    //链表头部插入节点
     void insertHead(int val)
     {
         //生成新的节点
@@ -57,6 +62,7 @@ public:
         node->next_ = head_->next_;
         head_->next_ = node;
     }
+
     //删除元素val的第一个节点
     void remove(int val){
         Node *q = head_;
@@ -72,6 +78,7 @@ public:
             }
         }
     }
+
     //删除元素val的所有节点
     void removeAll(int val){
         Node *q = head_;
@@ -89,6 +96,8 @@ public:
             }
         }
     }
+
+    //查找链表中指定值的节点
     bool find(int val){
         Node *p = head_->next_;
         while(p != nullptr){
@@ -108,7 +117,7 @@ public:
             return;
         }
         head_->next_ = nullptr;
-        while(p->next_ != nullptr){
+        while(p != nullptr){
             Node *q = p->next_;
             //这里其实是头插法
             p->next_ = head_->next_;
@@ -137,6 +146,39 @@ public:
         return q->data_;
     }
 
+    //生成单链表环
+    void generateListCircle(){
+        Node *p = head_;
+        while(p->next_ != nullptr){
+            p = p->next_;
+        }
+        p->next_ = head_->next_;
+    }
+
+    //链表环及环的入口地址
+    bool listCircle(){
+        Node *fast = head_;
+        Node *slow = head_;
+        while(fast != nullptr && fast->next_ != nullptr){
+            slow = slow->next_;
+            fast = fast->next_->next_;
+            //这里表示快指针和满指针相遇
+            if(slow == fast){
+                std::cout << "单链表存在环" <<" ";
+                fast = head_;
+                while(fast != slow){
+                    fast = fast->next_;
+                    slow = slow->next_;
+                }
+                int val = slow->data_;
+                std::cout << "环的入口节点的值为: "<< val << std::endl;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //打印链表
     void showNode(){
         Node *p = head_->next_;
         while (p != nullptr)
@@ -160,18 +202,21 @@ int main(){
     std::cout << std::endl;
     clink.showNode();
     
-    //删除元素测试
-    clink.insertTail(28);
-    clink.insertHead(14);
-    clink.insertHead(14);
+    //删除指定元素的节点测试
+    clink.insertHead(20000);
+    clink.insertTail(10000);
+    clink.insertTail(20000);
+    clink.insertHead(10000);
     clink.showNode();
-    clink.remove(14);
+    clink.remove(10000);
     clink.showNode();
-    clink.removeAll(14);
+
+    //删除指定元素的所有节点测试
+    clink.removeAll(20000);
     clink.showNode();
 
     //查找元素测试
-    std::cout <<clink.find(28) << std::endl;
+    std::cout << clink.find(10000) << std::endl;
 
     //单链表逆序测试
     clink.reverse();
@@ -179,6 +224,10 @@ int main(){
 
     //链表倒数第k个节点的值测试
     std::cout << clink.getKValue(1) <<std::endl;
+
+    //单链表环测试
+    clink.generateListCircle();
+    bool islistcircle = clink.listCircle();
     
     return 0;
 }
