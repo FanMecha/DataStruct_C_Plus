@@ -1,9 +1,6 @@
 # LeetCode
-# 🚀 LeetCode Practice & Data Structures in C++
-
-Welcome to my personal journey of improving C++ programming skills through solving LeetCode problems and learning core data structures and algorithms.
-
-This repository serves as a learning log, coding playground, and a collection of well-documented solutions — all implemented in modern C++.
+# 🚀 Data Structures in C++ 
+Welcome to my personal repository of improving C++ skills through learning data structures and algorithms.
 
 ---
 
