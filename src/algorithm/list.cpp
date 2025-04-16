@@ -139,6 +139,7 @@ public:
                 return -1;
             }
         }
+        //注意这里用节点p本身的地址做判断
         while(p != nullptr){
             q = q->next_;
             p = p->next_;
