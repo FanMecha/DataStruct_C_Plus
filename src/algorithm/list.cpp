@@ -40,7 +40,6 @@ public:
 private:
     Node *head_;
 public:
-
     //链表尾部插入节点
     void insertTail(int val){
         //先找到当前链表的末尾节点
