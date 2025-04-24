@@ -16,6 +16,7 @@
 #include <time.h>
 #include <stdlib.h>
 
+//<======================数组======================>
 class array{
 public:
     array(int size = 10):mCur_(0),mCap_(size){
@@ -31,7 +32,7 @@ private:
         mCap_ = size;
     }
 public:
-    //在数组尾部插入元素
+    //尾插
     void push_back(int val){
         if(mCur_ == mCap_){
             expand(2*mCap_);
@@ -39,7 +40,7 @@ public:
         mPtr_[mCur_] = val;
         mCur_++;
     }
-    //删除数组尾部元素
+    //尾删
     void pop_back(){
         if(mCur_ == 0){
             return;
@@ -47,7 +48,7 @@ public:
         //这里并没有真的删除最后一个元素,而是直接将元素的个数减1,这样打印时就认为数组里没有最后一个数据了
         mCur_--;
     }
-    //在数组指定位置插入元素
+    //指定位置插入元素
     void insert(int pos, int val){
         if(pos < 0 || pos > mCur_){
             return;
@@ -61,17 +62,17 @@ public:
         mPtr_[pos] = val;
         mCur_++;
     }
-    //删除数组指定位置元素
+    //删除指定位置元素
     void erase(int pos){
         if(pos < 0 || pos > mCur_){
             return;
         }
-        for(int i = pos; i <= mCur_; i++){
+        for(int i = pos; i < mCur_ - 1; i++){
             mPtr_[i] = mPtr_[i+1];
         }
         mCur_--;
     }
-    //查找元素
+    //查找
     int find(int val){
         for (int i = 0; i< mCur_; i++){
             if(mPtr_[i] == val){
@@ -80,7 +81,15 @@ public:
         }
         return -1;
     }
-    //===============双指针解决数组问题案例==============
+    //打印数组
+    void showArray(){
+        for(int i = 0; i< mCur_; i++){
+            std::cout << mPtr_[i]<<" ";
+        }
+        std::cout <<std::endl;
+    }
+public:
+    //===============数组问题案例==============
     //数组逆序
     void reverse(){
         int *p = mPtr_;
@@ -121,20 +130,16 @@ public:
             }
         }
     }
-    //打印数组
-    void showArray(){
-        for(int i = 0; i< mCur_; i++){
-            std::cout << mPtr_[i]<<" ";
-        }
-        std::cout <<std::endl;
-    }
 private:
     int *mPtr_; //数组的地址
     int mCur_; //数组元素的个数
     int mCap_; //数组的容量
 };
+
 int main(){
-    //末尾增加元素测试
+    std::cout <<"================数组测试===============" <<std::endl;
+    //尾插测试
+    std::cout << "尾插测试:";
     array arr;
     for (int i = 0; i < 10; i++){
         int val = rand() % 100;
@@ -142,24 +147,29 @@ int main(){
     }
     arr.showArray();
 
-    //末尾删除元素测试
+    //尾删测试
+    std::cout << "尾删测试:";
     arr.pop_back();
     arr.showArray();
 
     //指定位置插入元素测试
+    std::cout << "指定位置插入元素测试:";
     arr.insert(3,10000);
     arr.showArray();
 
     //指定位置删除元素测试
+    std::cout << "指定位置删除元素测试:";
     int pos = arr.find(10000);
     arr.erase(pos);
     arr.showArray();
 
-    //数组逆序测试
+    //逆序测试
+    std::cout << "逆序测试:";
     arr.reverse();
     arr.showArray();
 
     //奇偶数测试
+    std::cout << "奇偶数测试:";
     arr.adjustArray();
     arr.showArray();
 
