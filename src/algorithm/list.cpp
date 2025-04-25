@@ -13,10 +13,8 @@
 //3.链表搜索效率不高，只能从头节点开始逐节点遍历
 
 #include <iostream>
-#include <stdlib.h>
-#include <time.h>
 
-// ========================单向链表======================
+//<========================单向链表======================>
 class list{
 public:
     list(){
@@ -42,7 +40,7 @@ private:
     };
     Node *head_;
 public:
-    //链表尾部插入节点
+    //尾插
     void insertTail(int val){
         //先找到当前链表的末尾节点
         Node *p = head_;
@@ -54,8 +52,7 @@ public:
         //把新节点挂在尾节点的后面
         p->next_ = node;
     }
-
-    //链表头部插入节点
+    //头插
     void insertHead(int val)
     {
         //生成新的节点
@@ -63,8 +60,7 @@ public:
         node->next_ = head_->next_;
         head_->next_ = node;
     }
-
-    //删除元素val的第一个节点
+    //删除指定元素的第一个节点
     void remove(int val){
         Node *q = head_;
         Node *p = head_->next_;
@@ -79,8 +75,7 @@ public:
             }
         }
     }
-
-    //删除元素val的所有节点
+    //删除指定元素的所有节点
     void removeAll(int val){
         Node *q = head_;
         Node *p = head_->next_;
@@ -97,8 +92,7 @@ public:
             }
         }
     }
-
-    //查找链表中指定值的节点
+    //查找
     bool find(int val){
         Node *p = head_->next_;
         while(p != nullptr){
@@ -110,8 +104,19 @@ public:
         }
         return false;
     }
-
-    //单链表逆序
+    //打印链表
+    void showNode(){
+        Node *p = head_->next_;
+        while (p != nullptr)
+        {
+            std::cout << p->data_ << " ";
+            p = p->next_;
+        }
+        std::cout << std::endl;
+    }
+public:
+    //========================单向链表问题案例======================
+    //链表逆序
     void reverse(){
         Node *p = head_->next_;
         if(p == nullptr){
@@ -126,9 +131,8 @@ public:
             p = q;
         }
     }
-
     //求链表倒数第k个节点的值
-    int getKValue(int size){
+    int findKNode(int size){
         if (size < 1){
             return -1;
         }
@@ -147,7 +151,6 @@ public:
         }
         return q->data_;
     }
-
     // 删除倒数第K个节点
     void removeKNode(int size){
         Node *p = head_;
@@ -167,18 +170,67 @@ public:
         }
         q->next_ = q->next_->next_;
     }
-
-    //生成单链表环
-    void generateListCircle(){
-        Node *p = head_;
-        while(p->next_ != nullptr){
+    //合并两个有序链表
+    void mergeList(list &l){
+        Node *p = head_->next_;
+        Node *q = l.head_->next_;
+        Node *last = head_;
+        l.head_->next_ = nullptr;
+        while(p != nullptr && q != nullptr){
+            if(p->data_ < q->data_){
+                last->next_ = p;
+                p = p->next_;
+                last = last->next_;
+            }else{
+                last->next_ = q;
+                q = q->next_;
+                last = last->next_;
+            }
+            if(p != nullptr){
+                last->next_ = p;
+            }else{
+                last->next_ = q;
+            }
+        }
+    }
+    //判断两个链表是否相交
+    bool isMerge(list &l){
+        Node *p = head_->next_;
+        Node *q = l.head_->next_;
+        int num1 = 0, num2 = 0;
+        while(p != nullptr){
+            num1++;
             p = p->next_;
         }
-        p->next_ = head_->next_;
+        while(q != nullptr){
+            num2++;
+            q = q->next_;
+        }
+        p = head_;
+        q = l.head_;
+        if (num1 > num2){
+            int offset = num1 - num2;
+            for(int i = 0; i < offset; i++){
+                p = p->next_;
+            }
+        }
+        if (num1 < num2){
+            int offset = num2 - num1;
+            for(int i = 0; i < offset; i++){
+                q = q->next_;
+            }
+        }
+        while(p != nullptr){
+            if(p->data_ == q->data_){
+                return true;
+            }
+            p = p->next_;
+            q = q->next_;
+        }
+        return false;
     }
-
-    //链表环及环的入口地址
-    bool listCircle(){
+    //链表环
+    bool isCircle(){
         Node *fast = head_;
         Node *slow = head_;
         while(fast != nullptr && fast->next_ != nullptr){
@@ -186,184 +238,191 @@ public:
             fast = fast->next_->next_;
             //这里表示快指针和满指针相遇
             if(slow == fast){
-                std::cout << "单链表存在环" <<" ";
                 fast = head_;
                 while(fast != slow){
                     fast = fast->next_;
                     slow = slow->next_;
                 }
-                int val = slow->data_;
-                std::cout << "环的入口节点的值为: "<< val << std::endl;
                 return true;
             }
         }
         return false;
     }
-
-    //打印链表
-    void showNode(){
-        Node *p = head_->next_;
-        while (p != nullptr)
-        {
-            std::cout << p->data_ << " ";
-            p = p->next_;
-        }
-        std::cout << std::endl;
-    }
 };
 
-// ========================单向循环链表======================
+//<========================单向循环链表======================>
 class circleList{
 public:
     circleList(){
         head_ = new Node();
-        tail_ = head_; //head_和tail_的地址相同
         head_->next_ = head_;
     }
     ~circleList(){
-        Node *p = head_->next_;
+        Node *p = head_;
         while(p != head_){
-            head_->next_ = p->next_;
-            delete p;
-            p = head_->next_;
+           head_ = head_->next_;
+           delete p;
+           p = head_;
         }
         delete head_;
     }
 public:
-    // 头插
+    //头插
     void insertHead(int val){
-        Node *node = new Node(val);
-        node->next_ = head_->next_;
-        head_->next_ = node;
-        if (node->next_ == head_){
-            tail_ = node;
-        }
+        Node *p = new Node(val);
+        p->next_ = head_->next_;
+        head_->next_ = p;
     }
-    // 尾插
+    //尾插
     void insertTail(int val){
         Node *node = new Node(val);
-        tail_->next_ = node;
+        Node *p = head_;
+        while(p->next_ != head_){
+            p = p->next_;
+        }
+        p->next_ = node;
         node->next_ = head_;
-        tail_ = node;
-    } 
-    // 删除指定的第一个元素
+    }
+    //删除第一个指定节点
     void remove(int val){
-        Node *q = head_;
         Node *p = head_->next_;
+        Node *q = head_;
         while(p != head_){
             if(p->data_ == val){
                 q->next_ = p->next_;
                 delete p;
-                if(q->next_ == head_){
-                    tail_ = q;
-                }
-                return;
+                break;
+            }
+            p = p->next_;
+            q = q->next_;
+        }
+    }
+    //查找
+    bool find(int val){
+        Node *p = head_;
+        while(p->next_ != head_){
+            if(p->data_ == val){
+                return true;
             }else{
-                q = q->next_;
                 p = p->next_;
             }
         }
-    }
-    // 查找元素
-    bool find(int val){
-        Node *p = head_->next_;
-        while(p != head_){
-            if(p->data_ == val){
-                return true;
-            }
-            p = p->next_;
-        }
         return false;
     }
-    // 打印链表
-    void show() const{
+    //打印
+    void showNode(){
         Node *p = head_->next_;
-        while(p != head_){
+        while (p != head_){
             std::cout << p->data_ << " ";
             p = p->next_;
         }
         std::cout << std::endl;
     }
-
 private:
     struct Node
     {
     public:
-        Node(int data = 0) : data_(data), next_(nullptr){
-        }
+        Node(int data = 0) : data_(data), next_(nullptr){}
         int data_;
         Node *next_;
     };
-
     Node *head_;
-    Node *tail_;
 };
 
 int main(){
-    // ==================单向链表测试=====================
-    //头插和尾插测试
+    std::cout <<"===============单向链表测试================" <<std::endl;
+    //头插测试
     list l;
-    srand(time(0));
-    for (int i = 0; i < 10; i++){
-        int val = rand() % 100;
-        l.insertHead(val);
-        std::cout << val << " ";
-    }
-    std::cout << std::endl;
+    std::cout << "头插测试:";
+    l.insertHead(10000);
+    l.insertHead(1221);
+    l.insertHead(518);
+    l.insertHead(304);
+    l.insertHead(286);
+    l.showNode();
+
+    //尾插测试
+    std::cout << "尾插测试:";
+    l.insertTail(227);
+    l.insertTail(10000);
+    l.showNode();
+
+    //删除第一个指定节点测试
+    std::cout << "删除第一个指定节点测试:";
+    l.remove(227);
+    l.showNode();
+
+    //删除所有指定节点测试
+    std::cout << "删除所有指定节点测试:";
+    l.removeAll(10000);
     l.showNode();
     
-    //删除指定元素的节点测试
-    l.insertHead(20000);
-    l.insertTail(10000);
-    l.insertTail(20000);
-    l.insertHead(10000);
-    l.showNode();
-    l.remove(10000);
-    l.showNode();
-
-    //删除指定元素的所有节点测试
-    l.removeAll(20000);
-    l.showNode();
-
-    //查找元素测试
-    std::cout << l.find(10000) << std::endl;
+    //查找节点测试
+    std::cout << "查找指定节点测试: ";
+    l.find(1221) ? std::cout << "true" <<std::endl : std::cout << "false" <<std::endl;
 
     //单链表逆序测试
+    std::cout << "单链表逆序测试:";
     l.reverse();
     l.showNode();
 
-    //链表倒数第k个节点的值测试
-    std::cout << l.getKValue(3) <<std::endl;
-
-    //删除链表倒数第K个节点的值
-    l.removeKNode(3);
+    //查找倒数第K个节点测试
+    std::cout << "查找倒数第3个节点测试: " << l.findKNode(3) <<std::endl;
+    
+    //删除倒数第K个节点测试
+    std::cout << "删除倒数第2个节点测试:";
+    l.removeKNode(2);
     l.showNode();
 
-    //单链表环测试
-    l.generateListCircle();
-    bool islistcircle = l.listCircle();
+    //有序链表合并测试
+    std::cout << "有序链表合并测试:\n";
+    list l1;
+    std::cout << "list1:";
+    l.reverse();
+    l.showNode();
+    l1.insertTail(227);
+    l1.insertTail(334);
+    l1.insertTail(10000);
+    std::cout << "list2:";
+    l1.showNode();
+    
+    l.mergeList(l1);
+    l.showNode();
 
-    // ==================单向循环链表测试=====================
-    circleList c;
-    for (int i = 0; i < 10; i++){
-        int val = rand() % 100;
-        c.insertHead(val);
-        std::cout << val << " ";
-    }
-    std::cout << std::endl;
-    c.show();
+    //链表相交测试
+    std::cout << "链表相交测试:";
+    l.isMerge(l1) ? std::cout << "true"<<std::endl : std::cout << "false" <<std::endl;
+
+    //链表环测试
+    std::cout << "链表环测试:";
+    l.isCircle() ? std::cout << "true"<<std::endl : std::cout << "false" <<std::endl;
+
+    std::cout <<"===============单向循环链表测试================" <<std::endl;
+    //头插测试
+    std::cout << "头插测试:";
+    circleList cl;
+    cl.insertHead(100);
+    cl.insertHead(200);
+    cl.insertHead(300);
+    cl.insertHead(400);
+    cl.showNode();
 
     //尾插测试
-    c.insertTail(200);
-    c.insertTail(300);
-    c.insertTail(400);
-    c.show();
+    std::cout << "尾插测试:";
+    cl.insertTail(500);
+    cl.insertTail(600);
+    cl.insertTail(700);
+    cl.insertTail(800);
+    cl.showNode();
+    
+    //删除第一个节点测试
+    std::cout << "删除第一个节点测试:";
+    cl.remove(800);
+    cl.showNode();
 
     //查找测试
-    std::cout << c.find(200) <<std::endl;
+    std::cout << "查找测试:";
+    cl.find(100) ? std::cout << "true"<<std::endl : std::cout << "false" <<std::endl;
 
-    //删除测试
-    c.remove(300);
-    c.show();
     return 0;
 }

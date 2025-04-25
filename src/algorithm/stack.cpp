@@ -7,14 +7,13 @@
 //======链式栈：入栈出栈的时间复杂度为O(1)，但是链式栈不需要扩容
 #include <iostream>
 
-
-//==========================顺序栈
-class seqStack{
+//<========================顺序栈======================>
+class arrayStack{
 public:
-    seqStack(int size = 10): mTop_(0), mCap_(size){
+    arrayStack(int size = 10): mTop_(0), mCap_(size){
         mPtr_ = new int[mCap_];
     }
-    ~seqStack(){
+    ~arrayStack(){
         delete []mPtr_;
         mPtr_ = nullptr;
     }
@@ -63,13 +62,13 @@ private:
     int mTop_;  //栈元素个数(即代表栈顶元素)
 };
 
-//=========================链式栈
-class linkStack{
+//<========================链式栈======================>
+class listStack{
 public:
-    linkStack():size_(0){
+    listStack():size_(0){
         head_ = new Node();
     }
-    ~linkStack(){
+    ~listStack(){
         Node *p = head_;
         while(p != nullptr){
             head_ = head_->next_;
@@ -77,7 +76,8 @@ public:
             p = head_;
         }
     }
-    //入栈
+public:
+    //入栈(头插模拟栈顶)
     void push(int val){
         Node *p = new Node(val);
         p->next_ = head_->next_;
@@ -110,7 +110,6 @@ public:
     int size() const{
         return size_;
     }
-
 private:
     struct Node
     {
@@ -122,23 +121,26 @@ private:
     int size_;
 };
 int main(){
+    std::cout <<"================顺序栈测试===============" <<std::endl;
     int arr[7] = {11, 8, 52, 90, 14, 28, 36};
-    seqStack s;
+    arrayStack as;
     for (int i = 0; i < 7; i++){
-        s.push(arr[i]);
+        as.push(arr[i]);
     }
-    std::cout << "栈的大小为" << s.size()<< " "<< "并且栈的元素为:" << " ";
-    while(!s.empty()){
-        std::cout << s.top()<< " ";
-        s.pop();
+    std::cout << "顺序栈的大小为" << as.size()<< " "<< "并且栈的元素为:" << " ";
+    while(!as.empty()){
+        std::cout << as.top()<< " ";
+        //只能先把栈顶元素pop掉才能访问里面的元素
+        as.pop();
     }
     std::cout << std::endl;
 
-    linkStack l;
+    std::cout <<"===============链式栈测试===============" <<std::endl;
+    listStack l;
     for (int i = 0; i < 7; i++){
         l.push(arr[i]);
     }
-    std::cout << "栈的大小为" << l.size()<< " "<< "并且栈的元素为:" << " ";
+    std::cout << "链式栈的大小为" << l.size()<< " "<< "并且栈的元素为:" << " ";
     while(!l.empty()){
         std::cout << l.top()<< " ";
         l.pop();
